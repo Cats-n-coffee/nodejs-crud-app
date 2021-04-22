@@ -7,11 +7,23 @@ function routes(req, res) {
 
     if (req.method === 'GET') {
         console.log('get request')
-        if (reqUrl.pathname === '/cat') {
+        if (reqUrl.pathname === '/') {
+            try {
+                console.log('home route')
+                //res.statusCode = 200;
+                //res.writeHead(200, { "Content-Type": "application/json" });
+                res.write(JSON.stringify({ route: 'home' }))
+            }
+            catch (err) {
+                console.log('catch /home err')
+            }
+        }
+        else if (reqUrl.pathname === '/cat') {
             try {
                 res.statusCode = 200;
                 console.log('cats was reached')
-                res.end('cats')
+                controllers.findUser();
+                res.write('cats')
             }
             catch (err) {
                 console.log('catch /cat err', err)
@@ -20,10 +32,12 @@ function routes(req, res) {
         else {
             console.log('not found route')
             res.statusCode = 404;
-            res.end(JSON.stringify({ status: 400, message: "not found" }))
+            res.write(JSON.stringify({ status: 400, message: "not found" }))
         }
+
+        res.end();
     }
-    if (req.method === 'POST') {
+    else if (req.method === 'POST') {
         console.log('post request')
         if (reqUrl.pathname === '/cat') {
             try {
@@ -31,8 +45,6 @@ function routes(req, res) {
                 // const reqBody = req.body;
                 // console.log('reqBody',req)
                 //res.statusCode = 200;
-
-                controllers.insertUser()
 
                 let serverRes = '';
 
@@ -44,6 +56,7 @@ function routes(req, res) {
                 req.on('end', () => {
                     let jsonObj = JSON.parse(serverRes);
                     console.log(jsonObj);
+                    controllers.insertUser(jsonObj)
                     res.writeHead(200, { "Content-type": "application/json" })
                     res.end(serverRes)
                 })
@@ -52,6 +65,24 @@ function routes(req, res) {
                 console.log('catch /cat POST err', err)
             }
         }
+    }
+    else if (req.method === 'DELETE') {
+        if (reqUrl.pathname === '/cat') {
+            console.log('delete /cat')
+            controllers.deleteUser();
+            res.statusCode = 200;
+            res.write('deleted')
+        }
+        res.end()
+    }
+    else if (req.method === 'PUT') {
+        if (reqUrl.pathname === '/cat') {
+            console.log('update /cat')
+            controllers.updateUser();
+            res.statusCode = 200;
+            res.write('update')
+        }
+        res.end()
     }
 
 }
