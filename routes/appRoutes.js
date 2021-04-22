@@ -1,4 +1,5 @@
-const http = require('http');
+//const http = require('http');
+const controllers = require('../controllers/appControllers');
 
 function routes(req, res) {
     const reqUrl = new URL(req.url, 'http://localhost');
@@ -30,6 +31,9 @@ function routes(req, res) {
                 // const reqBody = req.body;
                 // console.log('reqBody',req)
                 //res.statusCode = 200;
+
+                controllers.insertUser()
+
                 let serverRes = '';
 
                 req.on('data', chunk => {
