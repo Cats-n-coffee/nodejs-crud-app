@@ -10,13 +10,11 @@ function formSubmitted(e) {
     let name = nameInput.value;
     let age = ageInput.value;
 
-    console.log('submitted', name, age)
     postData(name, age)
 }
 
 function postData(name, age) {
     const obj = { name: name, age: age };
-    console.log(obj)
 
     fetch('http://127.0.0.1:4000/signup', {
         method: "POST",
@@ -29,10 +27,20 @@ function postData(name, age) {
         body: JSON.stringify(obj)
     })
     .then(response => response.json())
-    .then(data => storeInLocalStorage(data.name))
+    .then(data => {
+        console.log(data)
+        if (data.error) {
+            console.log(data.message);
+        }
+        else {
+            storeInLocalStorage('name', data.name)
+            storeInLocalStorage('id', data._id)
+        }
+    })
     .catch(err => console.log('error posting data', err))
 }
 
+// ------------------------------------------ EDIT MESSAGE ---------------------------------------
 const formTwo = document.getElementById('form-2');
 const messageInput = document.getElementById('message');
 
@@ -63,12 +71,81 @@ function editEntry(e) {
     
 }
 
-function storeInLocalStorage(name) {
+// ------------------------------------- LOGIN --------------------------------------
+const formLogin = document.getElementById('form-3');
+const nameLogin = document.getElementById('name-login');
+
+formLogin.addEventListener('submit', loginSubmit);
+
+function loginSubmit(e) {
+    e.preventDefault();
+    
+    const name = nameLogin.value;
+    const obj = { name: name };
+
+    fetch('http://127.0.0.1:4000/login', {
+        method: "POST",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "*/*",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj)
+    })
+    .then(response => response.json())
+    .then(data => {
+        storeInLocalStorage('name', data.name)
+        storeInLocalStorage('id', data._id)
+    })
+    .catch(err => console.log('error posting data', err))
+}
+
+// --------------------------------------------- DELETE USER ------------------------------------
+const deleteBtn = document.getElementById('delete-btn');
+
+deleteBtn.addEventListener('click', deleteUser);
+
+function deleteUser() {
+    const userId = retrieveFromLocalStorage("id");
+    const obj = { id: userId }
+    console.log(userId)
+
+    fetch('http://127.0.0.1:4000/delete', {
+        method: "DELETE",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "*/*",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        removeFromLocalStorage("id")
+        removeFromLocalStorage("name")
+    })
+    .catch(err => console.log('error deleting data', err))
+}
+
+// ----------------------------------------- LOCAL STORAGE ---------------------------------------
+function storeInLocalStorage(key, name) {
     console.log(name)
-    return window.localStorage.setItem('name', name)
+    return window.localStorage.setItem(key, name);
 }
 
 function retrieveFromLocalStorage(key) {
     console.log(key)
-    return window.localStorage.getItem(key)
+    return window.localStorage.getItem(key);
+}
+
+function removeFromLocalStorage(key) {
+    console.log(key);
+    return window.localStorage.removeItem(key);
+}
+
+function clearLocalStorage() {
+    return window.localStorage.clear();
 }

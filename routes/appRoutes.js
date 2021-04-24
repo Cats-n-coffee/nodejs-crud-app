@@ -1,15 +1,14 @@
 //const http = require('http');
+const ObjectId = require('mongodb').ObjectID;
 const dbOperations = require('../db/dbOperations');
 
 function routes(req, res) {
     const reqUrl = new URL(req.url, 'http://localhost');
-    console.log('in routes function', reqUrl)
     console.log('method', req.method)
 
     let serverRes = '';
 
     req.on('data', chunk => {
-        console.log('req on chunk', chunk);
         serverRes += chunk;
     });
 
@@ -41,9 +40,7 @@ function routes(req, res) {
             }
         }
         else {
-            console.log('not found route')
-            res.statusCode = 404;
-            res.write(JSON.stringify({ status: 400, message: "not found" }))
+            res.write(JSON.stringify({ status: 404, message: "not found" }))
         }
 
         res.end();
@@ -56,16 +53,16 @@ function routes(req, res) {
 
                 req.on('end', () => {
                     let jsonObj = JSON.parse(serverRes);
-                    console.log(jsonObj);
+             
                     dbOperations.insertUser(jsonObj)
-                    //const rev = () => { return response.then(data => console.log('data',data)) }
-                    res.writeHead(200, { 
-                        "Content-Type": "application/json",
-                        "Access-Control-Allow-Origin": "*",
+                    .then(data => {
+                        res.writeHead(200, { 
+                            "Content-Type": "application/json",
+                            "Access-Control-Allow-Origin": "*",
+                        })
+                        res.end(JSON.stringify(data))
                     })
-                    //console.log(rev)
-                    res.end(serverRes)
-                    //res.end(response)
+                    .catch(err => console.log('signup promise err', err))            
                 })
             }
             catch (err) {
@@ -76,10 +73,16 @@ function routes(req, res) {
             try {
                 req.on('end', () => {
                     let jsonObj = JSON.parse(serverRes);
-                    res.statusCode = 200;
-                    dbOperations.findUser({ name: jsonObj.name });
-                    res.writeHead(200, { "Content-type": "application/json" })
-                    res.end(serverRes)
+
+                    dbOperations.findUser({ name: jsonObj.name })
+                    .then(data => {
+                        res.writeHead(200, { 
+                            "Content-type": "application/json",
+                            "Access-Control-Allow-Origin": "*", 
+                        })
+                        res.end(JSON.stringify(data))
+                    })
+                    .catch(err => console.log(err))
                 })
                 
             }
@@ -94,14 +97,14 @@ function routes(req, res) {
             try {
                 req.on('end', () => {
                     let jsonObj = JSON.parse(serverRes);
-                    res.statusCode = 200;
-                    console.log(jsonObj)
-                    dbOperations.deleteUser({ name: jsonObj.name });
+                    let formattedId = new ObjectId(jsonObj.id);
+        
+                    dbOperations.deleteUser({ _id: formattedId});
                     res.writeHead(200, { 
                         "Content-type": "application/json",
                         "Access-Control-Allow-Origin": "*" 
                     })
-                    res.end(serverRes)
+                    res.end(JSON.stringify({ delete: jsonObj.id}))
                 })
             }
             catch (err) {
