@@ -13,15 +13,26 @@ function routes(req, res) {
         serverRes += chunk;
     });
 
+    //---------------------------------------- OPTIONS requests, handles preflights
+    if (req.method === "OPTIONS") {
+        res.writeHead(204, {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "OPTIONS, POST, GET, PUT, DELETE",
+            "Access-Control-Max-Age": 600
+        });
+        res.end();
+        return;
+      }
+
     // --------------------------------------- GET requests
-    if (req.method === 'GET') {
+    else if (req.method === 'GET') {
         if (reqUrl.pathname === '/') {
             try {
                 console.log('home route')
                 res.writeHead(200, { 
                     "Content-Type": "application/json",
                     "Access-Control-Allow-Origin": "*",
-                    //"Access-Control-Allow-Methods": "*"
                 });
                 res.write(JSON.stringify({ route: 'home' }))
             }
@@ -47,11 +58,14 @@ function routes(req, res) {
                     let jsonObj = JSON.parse(serverRes);
                     console.log(jsonObj);
                     dbOperations.insertUser(jsonObj)
+                    //const rev = () => { return response.then(data => console.log('data',data)) }
                     res.writeHead(200, { 
                         "Content-Type": "application/json",
                         "Access-Control-Allow-Origin": "*",
                     })
+                    //console.log(rev)
                     res.end(serverRes)
+                    //res.end(response)
                 })
             }
             catch (err) {
@@ -83,8 +97,11 @@ function routes(req, res) {
                     res.statusCode = 200;
                     console.log(jsonObj)
                     dbOperations.deleteUser({ name: jsonObj.name });
-                    res.writeHead(200, { "Content-type": "application/json" })
-                    res.end('deleted')
+                    res.writeHead(200, { 
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*" 
+                    })
+                    res.end(serverRes)
                 })
             }
             catch (err) {
@@ -99,10 +116,13 @@ function routes(req, res) {
                 req.on('end', () => {
                     let jsonObj = JSON.parse(serverRes);
                     res.statusCode = 200;
-                    console.log(jsonObj)
-                    dbOperations.updateUser({ name: jsonObj.name }, { city: "palermo" });
-                    res.writeHead(200, { "Content-type": "application/json" })
-                    res.end('updated')
+                    console.log('put req',jsonObj)
+                    dbOperations.updateUser({ name: jsonObj.name }, { message: jsonObj.message });
+                    res.writeHead(200, { 
+                        "Content-type": "application/json",
+                        "Access-Control-Allow-Origin": "*" 
+                    })
+                    res.end(serverRes)
                 })
             }
             catch (err) {

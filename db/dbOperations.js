@@ -5,14 +5,16 @@ async function insertUser(data) {
     .db(process.env.MONGODB_DB)
     .collection('users');
 
-    newUser.findOne({ name: data.name })
-    .then(record => {
+    return newUser.findOne({ name: data.name })
+    .then(async record => {
         if (!record) {
-            newUser.insertOne({ name: data.name, age: data.age })
+            const userInserted = await newUser.insertOne({ name: data.name, age: data.age })
+            console.log('userInsert',userInserted);
+            return userInserted;
         }
         else if (record) {
-            console.log('record already exists')
-            return;
+            console.log('record already exists', record)
+            return record;
         }
     }) 
     .catch(err => console.log('insertUser err', err));
@@ -28,6 +30,7 @@ async function findUser(data) {
     .then(user => user)
     .catch(err => console.log('findOne err', err))
     console.log('user found', findOneUser)
+    return findOneUser;
 }
 
 async function deleteUser(data) {

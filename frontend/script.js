@@ -13,7 +13,7 @@ function formSubmitted(e) {
     console.log('submitted', name, age)
     postData(name, age)
 }
-//https://stackoverflow.com/questions/7067966/why-doesnt-adding-cors-headers-to-an-options-route-allow-browsers-to-access-my
+
 function postData(name, age) {
     const obj = { name: name, age: age };
     console.log(obj)
@@ -23,6 +23,36 @@ function postData(name, age) {
         mode: "cors",
         credentials: "same-origin",
         headers: {
+            "Accept": "*/*",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(obj)
+    })
+    .then(response => response.json())
+    .then(data => storeInLocalStorage(data.name))
+    .catch(err => console.log('error posting data', err))
+}
+
+const formTwo = document.getElementById('form-2');
+const messageInput = document.getElementById('message');
+
+formTwo.addEventListener('submit', editEntry);
+
+function editEntry(e) {
+    e.preventDefault();
+  
+    const userName = retrieveFromLocalStorage('name');
+    const message = messageInput.value;
+
+    const obj = { name: userName, message }
+    console.log('user', userName, 'message', message)
+
+    fetch('http://127.0.0.1:4000/update', {
+        method: "PUT",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "*/*",
             "Content-Type": "application/json"
         },
         body: JSON.stringify(obj)
@@ -30,4 +60,15 @@ function postData(name, age) {
     .then(response => response.json())
     .then(data => console.log(data))
     .catch(err => console.log('error posting data', err))
+    
+}
+
+function storeInLocalStorage(name) {
+    console.log(name)
+    return window.localStorage.setItem('name', name)
+}
+
+function retrieveFromLocalStorage(key) {
+    console.log(key)
+    return window.localStorage.getItem(key)
 }
