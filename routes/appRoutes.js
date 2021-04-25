@@ -76,6 +76,7 @@ function routes(req, res) {
 
                     dbOperations.findUser({ name: jsonObj.name })
                     .then(data => {
+                        console.log('/login', data)
                         res.writeHead(200, { 
                             "Content-type": "application/json",
                             "Access-Control-Allow-Origin": "*", 
@@ -118,14 +119,17 @@ function routes(req, res) {
             try {
                 req.on('end', () => {
                     let jsonObj = JSON.parse(serverRes);
-                    res.statusCode = 200;
-                    console.log('put req',jsonObj)
-                    dbOperations.updateUser({ name: jsonObj.name }, { message: jsonObj.message });
-                    res.writeHead(200, { 
-                        "Content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*" 
+                
+                    dbOperations.updateUser({ name: jsonObj.name }, { message: jsonObj.message })
+                    .then(data => {
+                        console.log('put /update',data.modifiedCount)
+                        res.writeHead(200, { 
+                            "Content-type": "application/json",
+                            "Access-Control-Allow-Origin": "*" 
+                        })
+                        res.end(JSON.stringify(data))
                     })
-                    res.end(serverRes)
+                    
                 })
             }
             catch (err) {

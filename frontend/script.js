@@ -95,8 +95,15 @@ function loginSubmit(e) {
     })
     .then(response => response.json())
     .then(data => {
-        storeInLocalStorage('name', data.name)
-        storeInLocalStorage('id', data._id)
+        console.log(data)
+        if (data.error) {
+            console.log(data.message)
+        }
+        else {
+            storeInLocalStorage('name', data.name)
+            storeInLocalStorage('id', data._id)
+        }
+        
     })
     .catch(err => console.log('error posting data', err))
 }

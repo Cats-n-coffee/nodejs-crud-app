@@ -31,7 +31,8 @@ async function findUser(data) {
 
     return findOneUser.findOne(data)
     .then(user => {
-        return user;
+        console.log('db ops',user)
+        return user === null ? { error: 'db error', message: 'User not found' } : user;
     })
     .catch(err => console.log('findOne err', err))
 }
@@ -43,7 +44,6 @@ async function deleteUser(data) {
     console.log('user to delete', data)
 
     return deleteOneUser.deleteOne(data)
-    //.then(data => console.log('db delete', data))
     .catch(err => console.log('deleteUser err', err))
 }
 
@@ -57,9 +57,15 @@ async function updateUser(data, addon) {
     const updateOneUser = await client
     .db(process.env.MONGODB_DB)
     .collection('users')
-    .updateOne(data, updatingWith)
-    .catch(err => console.log('deleteUser err', err))
-    console.log('updated one user')
+
+    return updateOneUser.updateOne(data, updatingWith)
+    .then(data => {
+        return { modifiedCount: data.modifiedCount}
+    })
+    .catch(err => { 
+        console.log('deleteUser err', err)
+        return { err: err.message };
+    })
 }
 
 module.exports = { insertUser, findUser, deleteUser, updateUser };
