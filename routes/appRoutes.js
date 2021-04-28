@@ -1,4 +1,3 @@
-//const http = require('http');
 const ObjectId = require('mongodb').ObjectID;
 const dbOperations = require('../db/dbOperations');
 
