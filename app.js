@@ -1,5 +1,4 @@
 const http = require('http');
-//const routes = require('./routes/appRoutes');
 const { connectToDb } = require('./db/dbConnection');
 const appRoutes = require('./routes/newRoutes');
 
@@ -11,7 +10,6 @@ connectToDb();
 
 // Creates a server
 const server = http.createServer((req, res) => {   
-    //routes(req, res);
     appRoutes(req, res);
 })
 

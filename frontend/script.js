@@ -1,5 +1,6 @@
 const formOne = document.getElementById('form-1');
 const nameInput = document.getElementById('name');
+const passwordInput = document.getElementById('password');
 const ageInput = document.getElementById('age');
 
 formOne.addEventListener('submit', formSubmitted);
@@ -8,13 +9,15 @@ function formSubmitted(e) {
     e.preventDefault();
 
     let name = nameInput.value;
+    let password = passwordInput.value;
     let age = ageInput.value;
 
-    postData(name, age)
+    postData(name, password, age)
 }
 
-function postData(name, age) {
-    const obj = { name: name, age: age };
+function postData(name, password, age) {
+    const obj = { name: name, password: password, age: age };
+    console.log(obj)
 
     fetch('http://127.0.0.1:4000/signup', {
         method: "POST",
@@ -74,6 +77,7 @@ function editEntry(e) {
 // ------------------------------------- LOGIN --------------------------------------
 const formLogin = document.getElementById('form-3');
 const nameLogin = document.getElementById('name-login');
+const passwordLogin = document.getElementById('password-login');
 
 formLogin.addEventListener('submit', loginSubmit);
 
@@ -81,7 +85,8 @@ function loginSubmit(e) {
     e.preventDefault();
     
     const name = nameLogin.value;
-    const obj = { name: name };
+    const password = passwordLogin.value;
+    const obj = { name: name, password: password };
 
     fetch('http://127.0.0.1:4000/login', {
         method: "POST",
@@ -105,7 +110,7 @@ function loginSubmit(e) {
         }
         
     })
-    .catch(err => console.log('error posting data', err))
+    .catch(err => console.log('error posting data', err, err.message))
 }
 
 // --------------------------------------------- DELETE USER ------------------------------------

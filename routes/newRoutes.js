@@ -8,7 +8,6 @@ async function appRoutes(req, res) {
 
     await req.on('data', chunk => {
         serverRes += chunk;
-        console.log('server rsponse', serverRes)
     });
 
     if (req.method === 'OPTIONS') { // ------------------- OPTIONS requests
@@ -18,12 +17,10 @@ async function appRoutes(req, res) {
         
     // }
     else if (req.method === 'POST') { // ----------------- POST requests  
-        if (reqUrl.pathname === '/signup') {
-            
+        if (reqUrl.pathname === '/signup') {  
             controllers.postSignup(req, res, serverRes);
         }
         else if (reqUrl.pathname === '/login') {
-            console.log('serverRes', serverRes)
             controllers.postLogin(req, res, serverRes);
         }
         else {
