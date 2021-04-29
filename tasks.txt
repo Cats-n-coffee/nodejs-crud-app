@@ -1,0 +1,16 @@
+[X] Delete button frontend + operation backend
+[X] Login POST frontend handle error for user not in db
+[X] Return id from db
+[X] backend
+    [X] split code, classes?
+    [X] routing in functions? like express
+    [X] return json from db to frontend
+        [X] handle errors from backend and db AT WHAT LEVEL SHOULD WE HANDLE ERRORS???????
+        [X] is there error handling in Mongo docs?
+
+[] Frontend modules
+[] Frontend in different folder
+
+[] Backend bonus: rewrite the whole app express way (classes?)
+
+[X] add authentication? crypto module

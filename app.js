@@ -9,7 +9,11 @@ const HOST = process.env.HOST || '127.0.0.1';
 connectToDb();
 
 // Creates a server
-const server = http.createServer((req, res) => {   
+const server = http.createServer((req, res) => { 
+    req.on('error', (err) => {
+        console.log('error at app.js', err);
+        res.end(JSON.stringify({ error: 'Something went wrong' }))
+    })  
     appRoutes(req, res);
 })
 

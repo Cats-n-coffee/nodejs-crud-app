@@ -23,8 +23,8 @@ async function appRoutes(req, res) {
         else if (reqUrl.pathname === '/login') {
             controllers.postLogin(req, res, serverRes);
         }
-        else {
-            console.log('POST else statment hit')
+        else { // fires when method is correct but pathname is not
+            controllers.errorRoute(res);
         }
     }
     else if (req.method === 'PUT') { // ------------------ PUT requests 
@@ -32,7 +32,7 @@ async function appRoutes(req, res) {
             controllers.putUpdate(req, res, serverRes);
         }
         else {
-            console.log('PUT else statment hit')
+            controllers.errorRoute(res);
         }
     }
     else if (req.method === 'DELETE') { // --------------- DELETE requests
@@ -40,11 +40,16 @@ async function appRoutes(req, res) {
             controllers.deleteDelete(req, res, serverRes);
         }
         else {
-            console.log('DELETE else statment hit')
+            controllers.errorRoute(res);
         }
     }
     else {
         console.log('method isn\'t handled');
+        res.writeHead(405, {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        })
+        res.end(JSON.stringify({ error: 405, message: 'Method not allowed' }))
     }
 }
 

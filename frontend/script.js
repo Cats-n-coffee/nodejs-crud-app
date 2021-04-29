@@ -1,22 +1,22 @@
 const formOne = document.getElementById('form-1');
-const nameInput = document.getElementById('name');
+const usernameInput = document.getElementById('username');
+const emailInput = document.getElementById('email');
 const passwordInput = document.getElementById('password');
-const ageInput = document.getElementById('age');
 
 formOne.addEventListener('submit', formSubmitted);
 
 function formSubmitted(e) {
     e.preventDefault();
 
-    let name = nameInput.value;
+    let username = usernameInput.value;
+    let email = emailInput.value;
     let password = passwordInput.value;
-    let age = ageInput.value;
 
-    postData(name, password, age)
+    postData(username, email, password)
 }
 
-function postData(name, password, age) {
-    const obj = { name: name, password: password, age: age };
+function postData(username, email, password) {
+    const obj = { username: username, email: email, password: password};
     console.log(obj)
 
     fetch('http://127.0.0.1:4000/signup', {
@@ -36,7 +36,7 @@ function postData(name, password, age) {
             console.log(data.message);
         }
         else {
-            storeInLocalStorage('name', data.name)
+            storeInLocalStorage('email', data.email)
             storeInLocalStorage('id', data._id)
         }
     })
@@ -52,7 +52,7 @@ formTwo.addEventListener('submit', editEntry);
 function editEntry(e) {
     e.preventDefault();
   
-    const userName = retrieveFromLocalStorage('name');
+    const userName = retrieveFromLocalStorage('email');
     const message = messageInput.value;
 
     const obj = { name: userName, message }
@@ -105,7 +105,7 @@ function loginSubmit(e) {
             console.log(data.message)
         }
         else {
-            storeInLocalStorage('name', data.name)
+            storeInLocalStorage('email', data.email)
             storeInLocalStorage('id', data._id)
         }
         
@@ -137,7 +137,7 @@ function deleteUser() {
     .then(data => {
         console.log(data)
         removeFromLocalStorage("id")
-        removeFromLocalStorage("name")
+        removeFromLocalStorage("email")
     })
     .catch(err => console.log('error deleting data', err))
 }
@@ -161,3 +161,22 @@ function removeFromLocalStorage(key) {
 function clearLocalStorage() {
     return window.localStorage.clear();
 }
+
+// methods check
+// function tryMethod() {
+//     fetch('http://127.0.0.1:4000/delete', {
+//         method: "PATCH",
+//         mode: "cors",
+//         credentials: "same-origin",
+//         headers: {
+//             "Accept": "*/*",
+//             "Content-Type": "application/json"
+//         },
+//         //body: JSON.stringify(obj)
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log('connected',data)
+//     })
+//     .catch(err => console.log('error connecting', err))
+// }
