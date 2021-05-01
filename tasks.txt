@@ -7,10 +7,11 @@
     [X] return json from db to frontend
         [X] handle errors from backend and db AT WHAT LEVEL SHOULD WE HANDLE ERRORS???????
         [X] is there error handling in Mongo docs?
+[X] add authentication? crypto module
 
 [] Frontend modules
 [] Frontend in different folder
 
-[] Backend bonus: rewrite the whole app express way (classes?)
 
-[X] add authentication? crypto module
+
+

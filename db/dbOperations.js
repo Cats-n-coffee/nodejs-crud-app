@@ -1,3 +1,4 @@
+const ObjectId = require('mongodb').ObjectID;
 const { client } = require('./dbConnection');
 const password = require('../helpers/passwordEncrypt');
 
@@ -17,12 +18,6 @@ async function insertUser(data) {
             throw new Error('record already exists')
         }
     })
-    // .then(user => {
-    //     console.log('insertOne ops', user.ops)
-    //     return user.ops ? { _id: user.ops[0]._id, name: user.ops[0].name, age: user.ops[0].age }
-    //     : { error: "db error", message: "User already exists" };
-
-    // }) 
     .catch(err => {
         console.log('db insertUser error', err)
         return { error: "db error", message: err.message };
@@ -34,7 +29,7 @@ async function findUser(data) {
     .db(process.env.MONGODB_DB)
     .collection('users')
 
-    return findOneUser.findOne({ name: data.name })
+    return findOneUser.findOne({ email: data.email })
     .then(async user => {
         console.log('db ops',user)
         if (user === null) {
@@ -44,7 +39,7 @@ async function findUser(data) {
             return await password.verify(data.password, user.password)
             .then(pass => {
                 if (pass) {
-                    return { _id: user._id, name: user.name, age: user.age};
+                    return { _id: user._id, email: user.email};
                 }
                 else {
                     throw new Error('Cannot find user')
@@ -73,23 +68,29 @@ async function deleteUser(data) {
     })
 }
 
-async function updateUser(data, addon) {
+async function updateUser(data) {
+    const { _id, message } = data;
+    const formattedId = { _id: new ObjectId(_id) };
+    console.log('formattted', formattedId)
+
     const updatingWith = {
         $set: {
-            addon
+            message
         }
     }
+    console.log('updating', updatingWith)
 
     const updateOneUser = await client
     .db(process.env.MONGODB_DB)
     .collection('users')
+    console.log('db update', _id, 'message', message)
 
-    return updateOneUser.updateOne(data, updatingWith)
+    return updateOneUser.updateOne(formattedId, updatingWith)
     .then(data => {
         return { modifiedCount: data.modifiedCount}
     })
     .catch(err => { 
-        console.log('deleteUser err', err)
+        console.log('updateUser err', err)
         return { error: "db error", message: err.message };
     })
 }

@@ -52,11 +52,11 @@ formTwo.addEventListener('submit', editEntry);
 function editEntry(e) {
     e.preventDefault();
   
-    const userName = retrieveFromLocalStorage('email');
+    const userId = retrieveFromLocalStorage('id');
     const message = messageInput.value;
 
-    const obj = { name: userName, message }
-    console.log('user', userName, 'message', message)
+    const obj = { _id: userId, message }
+    console.log('user', userId, 'message', message)
 
     fetch('http://127.0.0.1:4000/update', {
         method: "PUT",
@@ -76,7 +76,7 @@ function editEntry(e) {
 
 // ------------------------------------- LOGIN --------------------------------------
 const formLogin = document.getElementById('form-3');
-const nameLogin = document.getElementById('name-login');
+const emailLogin = document.getElementById('email-login');
 const passwordLogin = document.getElementById('password-login');
 
 formLogin.addEventListener('submit', loginSubmit);
@@ -84,9 +84,9 @@ formLogin.addEventListener('submit', loginSubmit);
 function loginSubmit(e) {
     e.preventDefault();
     
-    const name = nameLogin.value;
+    const email = emailLogin.value;
     const password = passwordLogin.value;
-    const obj = { name: name, password: password };
+    const obj = { email: email, password: password };
 
     fetch('http://127.0.0.1:4000/login', {
         method: "POST",

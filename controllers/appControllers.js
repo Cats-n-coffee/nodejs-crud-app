@@ -54,7 +54,7 @@ function postLogin(req, res, serverRes) {
         let jsonObj = JSON.parse(serverRes);
         console.log(jsonObj)
 
-        dbOperations.findUser({ name: jsonObj.name, password: jsonObj.password })
+        dbOperations.findUser({ email: jsonObj.email, password: jsonObj.password })
         .then(data => {
             console.log('/login', data)
             res.writeHead(200, responseHeaders)
@@ -71,8 +71,10 @@ function postLogin(req, res, serverRes) {
 function putUpdate(req, res, serverRes) {
     req.on('end', () => {
         let jsonObj = JSON.parse(serverRes);
+        console.log('update', jsonObj)
+        //const formattedId = new ObjectId(jsonObj._id)
     
-        dbOperations.updateUser({ name: jsonObj.name }, { message: jsonObj.message })
+        dbOperations.updateUser({ _id: jsonObj._id, message: jsonObj.message })
         .then(data => {
             console.log('put /update',data.modifiedCount)
             res.writeHead(200, responseHeaders)
