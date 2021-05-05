@@ -13,9 +13,14 @@ async function appRoutes(req, res) {
     if (req.method === 'OPTIONS') { // ------------------- OPTIONS requests
         controllers.optionsController(res);
     }
-    // else if (req.method === 'GET') {
-        
-    // }
+    else if (req.method === 'GET') {
+        if (reqUrl.pathname === '/getting') {
+            controllers.getting(res)
+        }
+        else {
+            controllers.errorRoute(res);
+        }
+    }
     else if (req.method === 'POST') { // ----------------- POST requests  
         if (reqUrl.pathname === '/signup') {  
             controllers.postSignup(req, res, serverRes);

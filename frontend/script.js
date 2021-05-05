@@ -180,3 +180,22 @@ function clearLocalStorage() {
 //     })
 //     .catch(err => console.log('error connecting', err))
 // }
+
+const getBtn = document.getElementById('get-btn');
+
+getBtn.addEventListener('click', () => {
+    fetch('http://127.0.0.1:4000/getting', {
+        method: "GET",
+        mode: "cors",
+        credentials: "same-origin",
+        headers: {
+            "Accept": "*/*",
+            "Content-Type": "application/json"
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+    })
+    .catch(err => console.log('error getting GET data', err))
+})

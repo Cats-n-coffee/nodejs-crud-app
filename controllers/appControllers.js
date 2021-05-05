@@ -57,8 +57,13 @@ function postLogin(req, res, serverRes) {
         dbOperations.findUser({ email: jsonObj.email, password: jsonObj.password })
         .then(data => {
             console.log('/login', data)
-            res.writeHead(200, responseHeaders)
-            res.end(JSON.stringify(data))
+            if (data.error) {
+                throw new Error(data.message)
+            }
+            else {
+                res.writeHead(200, responseHeaders)
+                res.end(JSON.stringify(data))
+            }   
         })
         .catch(err => {
             console.log('login promise err', err);
@@ -109,4 +114,9 @@ function deleteDelete(req, res, serverRes) {
     })
 }
 
-module.exports = { optionsController, errorRoute, postSignup, postLogin, putUpdate, deleteDelete };
+function getting(res) {
+    res.writeHead(200, responseHeaders)
+    res.end(JSON.stringify({message: 'getting GET data'}))
+}
+
+module.exports = { optionsController, errorRoute, postSignup, postLogin, putUpdate, deleteDelete, getting };
