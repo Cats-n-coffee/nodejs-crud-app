@@ -23,7 +23,7 @@ function errorRoute(res) {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
     })
-    res.end(JSON.stringify({ error: 404, message: 'URL does not exist' }))
+    res.end(JSON.stringify({ ok: false, message: 'URL does not exist' }))
 }
 
 function postSignup(req, res, serverRes) {
@@ -43,7 +43,7 @@ function postSignup(req, res, serverRes) {
         .catch(err => {
             console.log('signup promise err', err);
             res.writeHead(500, responseHeaders)
-            res.end(JSON.stringify({ error: 500, message: 'Cannot signup user operation' }))
+            res.end(JSON.stringify({ ok: false, errMsg: err.message || 'Cannot signup user operation' }))
         })            
     })
     
@@ -68,7 +68,7 @@ function postLogin(req, res, serverRes) {
         .catch(err => {
             console.log('login promise err', err);
             res.writeHead(500, responseHeaders)
-            res.end(JSON.stringify({ error: 500, message: 'Cannot login user operation' }))
+            res.end(JSON.stringify({ ok: false, errMsg: err.message || 'Cannot login user operation' }))
         })
     })
 }
@@ -77,7 +77,6 @@ function putUpdate(req, res, serverRes) {
     req.on('end', () => {
         let jsonObj = JSON.parse(serverRes);
         console.log('update', jsonObj)
-        //const formattedId = new ObjectId(jsonObj._id)
     
         dbOperations.updateUser({ _id: jsonObj._id, message: jsonObj.message })
         .then(data => {
@@ -88,7 +87,7 @@ function putUpdate(req, res, serverRes) {
         .catch(err => {
             console.log('cannot update entry', err)
             res.writeHead(500, responseHeaders)
-            res.end(JSON.stringify({ error: 500, message: 'Cannot update operation' }))
+            res.end(JSON.stringify({ ok: false, errMsg: err.message || 'Cannot update operation' }))
         })
     })
 }
@@ -109,7 +108,7 @@ function deleteDelete(req, res, serverRes) {
         .catch(err => {
             console.log('delete promise err', err)
             res.writeHead(500, responseHeaders)
-            res.end(JSON.stringify({ error: 500, message: err.message || 'Cannot delete from db' }))
+            res.end(JSON.stringify({ ok: false, errMsg: err.message || 'Cannot delete from db' }))
         })
     })
 }
