@@ -8,6 +8,8 @@
         [X] handle errors from backend and db AT WHAT LEVEL SHOULD WE HANDLE ERRORS???????
         [X] is there error handling in Mongo docs?
 [X] add authentication? crypto module
+[] add token
+[] write errors to file with timestamp
 
 [] Frontend modules
 [] Frontend in different folder

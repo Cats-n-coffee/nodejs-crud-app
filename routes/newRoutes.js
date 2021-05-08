@@ -1,51 +1,55 @@
-const controllers = require('../controllers/appControllers');
+const authControllers = require('../controllers/authControllers');
+const invoiceControllers = require('../controllers/invoiceControllers');
 
 async function appRoutes(req, res) {
     const reqUrl = new URL(req.url, 'http://localhost');
 
     // reads the request stream and creates a string with the buffer
-    let serverRes = '';
+    let reqString = '';
 
     await req.on('data', chunk => {
-        serverRes += chunk;
+        reqString += chunk;
     });
 
     if (req.method === 'OPTIONS') { // ------------------- OPTIONS requests
-        controllers.optionsController(res);
+        authControllers.optionsController(res);
     }
     else if (req.method === 'GET') {
-        if (reqUrl.pathname === '/getting') {
-            controllers.getting(res)
+        if (reqUrl.pathname === '/api/selectinvoice') {
+            invoiceControllers.getSelectInvoice(req, res, reqUrl)
         }
         else {
-            controllers.errorRoute(res);
+            authControllers.errorRoute(res);
         }
     }
     else if (req.method === 'POST') { // ----------------- POST requests  
-        if (reqUrl.pathname === '/signup') {  
-            controllers.postSignup(req, res, serverRes);
+        if (reqUrl.pathname === '/api/signup') {  
+            authControllers.postSignup(req, res, reqString);
         }
-        else if (reqUrl.pathname === '/login') {
-            controllers.postLogin(req, res, serverRes);
+        else if (reqUrl.pathname === '/api/login') {
+            authControllers.postLogin(req, res, reqString);
+        }
+        else if (reqUrl.pathname === '/api/newinvoice') {
+            invoiceControllers.postNewInvoice(req, res, reqString);
         }
         else { // fires when method is correct but pathname is not
-            controllers.errorRoute(res);
+            authControllers.errorRoute(res);
         }
     }
     else if (req.method === 'PUT') { // ------------------ PUT requests 
-        if (reqUrl.pathname === '/update') {
-            controllers.putUpdate(req, res, serverRes);
+        if (reqUrl.pathname === '/api/update') {
+            authControllers.putUpdate(req, res, reqString);
         }
         else {
-            controllers.errorRoute(res);
+            authControllers.errorRoute(res);
         }
     }
     else if (req.method === 'DELETE') { // --------------- DELETE requests
-        if (reqUrl.pathname === '/delete') {
-            controllers.deleteDelete(req, res, serverRes);
+        if (reqUrl.pathname === '/api/delete') {
+            authControllers.deleteDelete(req, res, reqString);
         }
         else {
-            controllers.errorRoute(res);
+            authControllers.errorRoute(res);
         }
     }
     else {

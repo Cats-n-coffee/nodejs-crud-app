@@ -1,5 +1,5 @@
 const ObjectId = require('mongodb').ObjectID;
-const dbOperations = require('../db/dbOperations');
+const dbAuthOps = require('../db/dbAuthOps');
 const password = require('../helpers/passwordEncrypt');
 
 const responseHeaders = {
@@ -26,16 +26,16 @@ function errorRoute(res) {
     res.end(JSON.stringify({ ok: false, message: 'URL does not exist' }))
 }
 
-function postSignup(req, res, serverRes) {
+function postSignup(req, res, reqString) {
    
     console.log('POST /cat was reached')
 
     req.on('end', async () => {
-        let jsonObj = JSON.parse(serverRes);
+        let jsonObj = JSON.parse(reqString);
         console.log('response is', jsonObj)
         const hashedPassword = await password.hash(jsonObj.password);
         
-        await dbOperations.insertUser({ username: jsonObj.username, email: jsonObj.email, password: hashedPassword})
+        await dbAuthOps.insertUser({ username: jsonObj.username, email: jsonObj.email, password: hashedPassword})
         .then(data => {
             res.writeHead(201, responseHeaders)
             res.end(JSON.stringify(data))
@@ -49,12 +49,12 @@ function postSignup(req, res, serverRes) {
     
 }
 
-function postLogin(req, res, serverRes) {
+function postLogin(req, res, reqString) {
     req.on('end', () => {
-        let jsonObj = JSON.parse(serverRes);
+        let jsonObj = JSON.parse(reqString);
         console.log(jsonObj)
 
-        dbOperations.findUser({ email: jsonObj.email, password: jsonObj.password })
+        dbAuthOps.findUser({ email: jsonObj.email, password: jsonObj.password })
         .then(data => {
             console.log('/login', data)
             if (data.error) {
@@ -73,12 +73,12 @@ function postLogin(req, res, serverRes) {
     })
 }
 
-function putUpdate(req, res, serverRes) {
+function putUpdate(req, res, reqString) {
     req.on('end', () => {
-        let jsonObj = JSON.parse(serverRes);
+        let jsonObj = JSON.parse(reqString);
         console.log('update', jsonObj)
     
-        dbOperations.updateUser({ _id: jsonObj._id, message: jsonObj.message })
+        dbAuthOps.updateUser({ _id: jsonObj._id, message: jsonObj.message })
         .then(data => {
             console.log('put /update',data.modifiedCount)
             res.writeHead(200, responseHeaders)
@@ -92,12 +92,12 @@ function putUpdate(req, res, serverRes) {
     })
 }
 
-function deleteDelete(req, res, serverRes) {
+function deleteDelete(req, res, reqString) {
     req.on('end', () => {
-        let jsonObj = JSON.parse(serverRes);
+        let jsonObj = JSON.parse(reqString);
         const formattedId = new ObjectId(jsonObj.id);
     
-        dbOperations.deleteUser({ _id: formattedId})
+        dbAuthOps.deleteUser({ _id: formattedId})
         .then(data => {
             if (data === undefined) {
                 throw new Error('Cannot delete user')
@@ -113,9 +113,6 @@ function deleteDelete(req, res, serverRes) {
     })
 }
 
-function getting(res) {
-    res.writeHead(200, responseHeaders)
-    res.end(JSON.stringify({message: 'getting GET data'}))
-}
 
-module.exports = { optionsController, errorRoute, postSignup, postLogin, putUpdate, deleteDelete, getting };
+
+module.exports = { optionsController, errorRoute, postSignup, postLogin, putUpdate, deleteDelete };
