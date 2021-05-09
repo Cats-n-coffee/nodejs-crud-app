@@ -20,7 +20,14 @@ async function findInvoices(data) {
     .collection('invoices')
 
     return findInvoiceInDb.find(data)
-    .then(data => console.log('found', data))
+    // .toArray((err, items) => {
+    //     if (err) throw new Error('Could not find invoices')
+    //     else {
+    //         return items;
+    //     }
+    // })
+    .toArray()
+    .then(data => data)
     .catch(err => console.log('found err', err))
 }
 

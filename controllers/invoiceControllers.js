@@ -15,7 +15,6 @@ function postNewInvoice(req, res, reqString) {
 
         dbInvoiceOps.insertNewInvoice(jsonObj)
         .then(data => {
-            console.log('data in controller', data)
             res.writeHead(200, responseHeaders)
             res.end(JSON.stringify(data))
         })
@@ -29,12 +28,23 @@ function postNewInvoice(req, res, reqString) {
 }
 
 function getSelectInvoice(req, res, reqUrl) {
-    console.log(reqUrl.searchParams.toString().split('=')[1])
-    const userId = reqUrl.searchParams.toString().split('=')[1];
+    console.log('params', reqUrl.searchParams)
+    console.log('string params', reqUrl.searchParams.toString())
+    
+    // console.log('user id ',reqUrl.searchParams.toString().split('=')[1])
+    // const userId = reqUrl.searchParams.toString().split('=')[1];
 
-    console.log(typeof userId)
-    res.writeHead(200, responseHeaders)
-    res.end(JSON.stringify({message: 'get invoice'}))
+    dbInvoiceOps.findInvoices({ user_id: userId })
+    .then(data => {
+        res.writeHead(200, responseHeaders)
+        res.end(JSON.stringify(data))
+    })
+    .catch(err => {
+        console.log('find invoice controller err', err)
+        res.writeHead(500, responseHeaders)
+        res.end(JSON.stringify({ ok: false, errMsg: err }))
+    })
+    
 }
 
 module.exports = { postNewInvoice, getSelectInvoice }
