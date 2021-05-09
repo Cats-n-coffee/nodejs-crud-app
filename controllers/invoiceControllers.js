@@ -1,5 +1,6 @@
 const ObjectId = require('mongodb').ObjectID;
 const dbInvoiceOps = require('../db/dbInvoiceOps');
+const { convertParams } = require('../helpers/paramsConverter');
 
 const responseHeaders = {
     "Content-Type": "application/json",
@@ -28,13 +29,11 @@ function postNewInvoice(req, res, reqString) {
 }
 
 function getSelectInvoice(req, res, reqUrl) {
-    console.log('params', reqUrl.searchParams)
-    console.log('string params', reqUrl.searchParams.toString())
-    
-    // console.log('user id ',reqUrl.searchParams.toString().split('=')[1])
-    // const userId = reqUrl.searchParams.toString().split('=')[1];
+    const params = reqUrl.searchParams;
+    const paramsObj = convertParams(params)
+    console.log('parmsObj', paramsObj)
 
-    dbInvoiceOps.findInvoices({ user_id: userId })
+    dbInvoiceOps.findInvoices(paramsObj)
     .then(data => {
         res.writeHead(200, responseHeaders)
         res.end(JSON.stringify(data))

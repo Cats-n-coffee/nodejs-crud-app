@@ -15,17 +15,12 @@ async function insertNewInvoice(data) {
 }
 
 async function findInvoices(data) {
+    console.log('db input data', data)
     const findInvoiceInDb = await client
     .db(process.env.MONGODB_DB)
     .collection('invoices')
 
     return findInvoiceInDb.find(data)
-    // .toArray((err, items) => {
-    //     if (err) throw new Error('Could not find invoices')
-    //     else {
-    //         return items;
-    //     }
-    // })
     .toArray()
     .then(data => data)
     .catch(err => console.log('found err', err))
