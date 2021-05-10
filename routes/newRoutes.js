@@ -48,6 +48,9 @@ async function appRoutes(req, res) {
         if (reqUrl.pathname === '/api/delete') {
             authControllers.deleteDelete(req, res, reqString);
         }
+        else if (reqUrl.pathname === '/api/deleteinvoice') {
+            invoiceControllers.deleteInvoice(req, res, reqString);
+        }
         else {
             authControllers.errorRoute(res);
         }

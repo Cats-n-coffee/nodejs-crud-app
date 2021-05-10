@@ -15,15 +15,24 @@ async function insertNewInvoice(data) {
 }
 
 async function findInvoices(data) {
-    console.log('db input data', data)
     const findInvoiceInDb = await client
     .db(process.env.MONGODB_DB)
     .collection('invoices')
 
     return findInvoiceInDb.find(data)
     .toArray()
-    .then(data => data)
+    .then(result => result)
     .catch(err => console.log('found err', err))
 }
 
-module.exports = { insertNewInvoice, findInvoices }
+async function deleteOneInvoice(data) {
+    const deleteWithId = await client
+    .db(process.env.MONGODB_DB)
+    .collection('invoices')
+
+    return deleteWithId.deleteOne(data)
+    .then(res => console.log({ deletedCount: res.deletedCount }))
+    .catch(err => console.log(err))
+}
+
+module.exports = { insertNewInvoice, findInvoices, deleteOneInvoice }

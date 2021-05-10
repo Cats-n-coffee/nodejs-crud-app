@@ -42,8 +42,23 @@ function getSelectInvoice(req, res, reqUrl) {
         console.log('find invoice controller err', err)
         res.writeHead(500, responseHeaders)
         res.end(JSON.stringify({ ok: false, errMsg: err }))
-    })
-    
+    }) 
 }
 
-module.exports = { postNewInvoice, getSelectInvoice }
+function deleteInvoice(req, res, reqString) {
+    console.log('delete req str', JSON.parse(reqString))
+    const invoice = JSON.parse(reqString);
+    
+    dbInvoiceOps.deleteOneInvoice(invoice)
+    .then(data => {
+        res.writeHead(200, responseHeaders)
+        res.end(JSON.stringify({ data: data, msg: 'delete route hit' }))
+    })
+    .catch(err => {
+        console.log('delete controller err', err)
+        res.writeHead(500, responseHeaders)
+        res.end(JSON.stringify({ ok: false, errMsg: err }))
+    })
+}
+
+module.exports = { postNewInvoice, getSelectInvoice, deleteInvoice }
