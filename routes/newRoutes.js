@@ -40,6 +40,9 @@ async function appRoutes(req, res) {
         if (reqUrl.pathname === '/api/update') {
             authControllers.putUpdate(req, res, reqString);
         }
+        else if (reqUrl.pathname === '/api/updateinvoice') {
+            invoiceControllers.updateInvoice(res, reqString)
+        }
         else {
             authControllers.errorRoute(res);
         }

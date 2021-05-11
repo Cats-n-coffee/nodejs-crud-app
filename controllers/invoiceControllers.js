@@ -61,4 +61,26 @@ function deleteInvoice(req, res, reqString) {
     })
 }
 
-module.exports = { postNewInvoice, getSelectInvoice, deleteInvoice }
+function updateInvoice(res, reqString) {
+    const parsedObj = JSON.parse(reqString);
+    const newObj = {
+        $set: {
+            item: parsedObj.item, 
+            price: parsedObj.price, 
+            invoice_date: parsedObj.invoice_date 
+        }   
+    }
+
+    dbInvoiceOps.updateOneInvoice({ invoice_id: parsedObj.invoice_id }, newObj)
+    .then(data => { 
+        res.writeHead(200, responseHeaders)
+        res.end(JSON.stringify({ data: data }))
+    })
+    .catch(err => {
+        console.log('err at update invoice controller', err)
+        res.writeHead(500, responseHeaders)
+        res.end(JSON.stringify({ ok: false, errMsg: err }))
+    })
+}
+
+module.exports = { postNewInvoice, getSelectInvoice, deleteInvoice, updateInvoice }

@@ -32,7 +32,17 @@ async function deleteOneInvoice(data) {
 
     return deleteWithId.deleteOne(data)
     .then(res => console.log({ deletedCount: res.deletedCount }))
-    .catch(err => console.log(err))
+    .catch(err => err)
 }
 
-module.exports = { insertNewInvoice, findInvoices, deleteOneInvoice }
+async function updateOneInvoice(id, data) {
+    const updateOneEntry = await client
+    .db(process.env.MONGODB_DB)
+    .collection('invoices')
+
+    return updateOneEntry.updateOne(id, data)
+    .then(res => res.modifiedCount)
+    .catch(err => err)
+}
+
+module.exports = { insertNewInvoice, findInvoices, deleteOneInvoice, updateOneInvoice }
