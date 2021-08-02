@@ -12,7 +12,6 @@ function postNewInvoice(req, res, reqString) {
         let jsonObj = JSON.parse(reqString);
         let timestamp = Date.now()
         jsonObj = {invoice_id: timestamp, ...jsonObj}
-        console.log(jsonObj)
 
         dbInvoiceOps.insertNewInvoice(jsonObj)
         .then(data => {
@@ -31,7 +30,6 @@ function postNewInvoice(req, res, reqString) {
 function getSelectInvoice(req, res, reqUrl) {
     const params = reqUrl.searchParams;
     const paramsObj = convertParams(params)
-    console.log('parmsObj', paramsObj)
 
     dbInvoiceOps.findInvoices(paramsObj)
     .then(data => {
@@ -46,7 +44,6 @@ function getSelectInvoice(req, res, reqUrl) {
 }
 
 function deleteInvoice(req, res, reqString) {
-    console.log('delete req str', JSON.parse(reqString))
     const invoice = JSON.parse(reqString);
     
     dbInvoiceOps.deleteOneInvoice(invoice)
